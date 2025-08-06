@@ -102,6 +102,25 @@ class BaristaTracker(Tk):
         settings_window.geometry("400x200")
         settings_window.resizable(False, False)
 
+        def on_close():
+            settings_window.destroy()
+            self.unfreeze_gui()
+
+        def save_settings():
+            try:
+                lower_bound = float(self.lower_bound_entry.get())
+                upper_bound = float(self.upper_bound_entry.get())
+                if lower_bound < 0 or upper_bound < 0 or lower_bound >= upper_bound:
+                    raise ValueError("Invalid bounds")
+                self.randomlow = lower_bound
+                self.randomhigh = upper_bound
+                messagebox.showinfo("Settings", "Settings saved successfully!")
+                on_close()
+            except ValueError as e:
+                messagebox.showerror("Error", f"Invalid input: {e}")
+            except Exception as e:
+                messagebox.showerror("Error", f"An unexpected error occurred: {e}")
+
         Label(settings_window, text="Lower bound (sec)").grid(row=0, column=0, padx=10, pady=10)
         self.lower_bound_entry = ttk.Entry(settings_window, width=5)
         self.lower_bound_entry.grid(row=0, column=1, padx=10, pady=10)
@@ -111,28 +130,10 @@ class BaristaTracker(Tk):
         self.upper_bound_entry.grid(row=1, column=1, padx=10, pady=10)
         self.upper_bound_entry.insert(0, str(self.randomhigh))
 
-        self.save_settings_btn = ttk.Button(settings_window, text="Save", command=self.save_settings)
+        self.save_settings_btn = ttk.Button(settings_window, text="Save", command=save_settings)
         self.save_settings_btn.grid(row=2, column=0, columnspan=2, pady=10)
 
-        def on_close():
-            settings_window.destroy()
-            self.unfreeze_gui()
-
         settings_window.protocol("WM_DELETE_WINDOW", on_close)
-
-    def save_settings(self):
-        try:
-            lower_bound = float(self.lower_bound_entry.get())
-            upper_bound = float(self.upper_bound_entry.get())
-            if lower_bound < 0 or upper_bound < 0 or lower_bound >= upper_bound:
-                raise ValueError("Invalid bounds")
-            self.randomlow = lower_bound
-            self.randomhigh = upper_bound
-            messagebox.showinfo("Settings", "Settings saved successfully!")
-        except ValueError as e:
-            messagebox.showerror("Error", f"Invalid input: {e}")
-        except Exception as e:
-            messagebox.showerror("Error", f"An unexpected error occurred: {e}")
 
     def freeze_gui(self):
         def _disable_all(widget):
