@@ -110,7 +110,7 @@ class BaristaTracker(Tk):
             try:
                 lower_bound = float(self.lower_bound_entry.get())
                 upper_bound = float(self.upper_bound_entry.get())
-                if lower_bound < 0 or upper_bound < 0 or lower_bound >= upper_bound:
+                if lower_bound <= 0 or upper_bound <= 0 or lower_bound >= upper_bound:
                     raise ValueError("Invalid bounds")
                 self.randomlow = lower_bound
                 self.randomhigh = upper_bound
